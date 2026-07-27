@@ -111,6 +111,17 @@ class ItemAbilities:  # pylint: disable=too-many-public-methods
             and bool(settings.WOPI_ONLYOFFICE_CONVERT_JWT_SECRET)
         )
 
+    def can_restrict(self) -> bool:
+        """Return whether the user can toggle restriction on the folder."""
+        # A restricted folder lives at the tree root: deactivation must stay
+        # possible there, while activation requires a parent for the restriction
+        return (
+            self.is_owner
+            and not self.is_deleted
+            and self.item.type == models.ItemTypeChoices.FOLDER
+            and (self.item.depth > 1 or self.item.is_restricted)
+        )
+
     def can_favorite(self) -> bool:
         """Return whether the user can mark the item as favorite."""
         return self.can_get() and self.user.is_authenticated
@@ -145,6 +156,7 @@ class ItemAbilities:  # pylint: disable=too-many-public-methods
             "invite_owner": self.can_invite_owner(),
             "link_select_options": self.link_select_options(),
             "move": self.can_manage(),
+            "restrict": self.can_restrict(),
             "restore": self.can_restore(),
             "retrieve": self.can_retrieve(),
             "tree": self.can_get(),
