@@ -11,6 +11,7 @@ and this project adheres to
 ### Added
 
 - 📈(backend) add a Sentry performance monitoring sample rate setting
+- ✨(backend) add an expiration date to item share links
 
 ### Fixed
 
