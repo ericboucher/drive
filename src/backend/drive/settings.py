@@ -1641,8 +1641,8 @@ class Development(Base):
     ALLOWED_HOSTS = ["*"]
     CORS_ALLOW_ALL_ORIGINS = True
     CSRF_TRUSTED_ORIGINS = [
-        "http://backend.drive.lasuite.localhost:8200",
-        "http://frontend.drive.lasuite.localhost:8203",
+        "http://drive.lasuite.localhost:8200",
+        "http://drive.lasuite.localhost:8203",
         *values.ListValue([], environ_name="CSRF_TRUSTED_ORIGINS"),
     ]
     DEBUG = True
