@@ -1,4 +1,5 @@
 import { fetchAPI } from "@/features/api/fetchApi";
+import { baseApiUrl } from "@/features/api/utils";
 import {
   Driver,
   Entitlements,
@@ -25,6 +26,7 @@ import {
   Item,
   ItemBreadcrumb,
   ItemType,
+  ItemVersion,
   User,
   UserLight,
   WopiInfo,
@@ -505,6 +507,40 @@ export class StandardDriver extends Driver {
       method: "POST",
     });
     return jsonToItem(await response.json());
+  }
+
+  async getItemVersions(itemId: string): Promise<ItemVersion[]> {
+    const response = await fetchAPI(`items/${itemId}/versions/`);
+    const data = await response.json();
+    return data.map((v) => ({ ...v, created_at: new Date(v.created_at) }));
+  }
+
+  async downloadItemVersion(
+    itemId: string,
+    versionId: string,
+  ): Promise<void> {
+    const response = await fetch(
+      `${baseApiUrl()}items/${itemId}/versions/${versionId}/download/`,
+      { credentials: "include", redirect: "manual" },
+    );
+    const location = response.headers.get("Location");
+    if (location) {
+      // The media-auth protected media URL requires a plain browser navigation
+      // so the nginx subrequest receives the session cookie.
+      window.location.href = location;
+    }
+  }
+
+  async restoreItemVersion(itemId: string, versionId: string): Promise<void> {
+    await fetchAPI(`items/${itemId}/versions/${versionId}/restore/`, {
+      method: "POST",
+    });
+  }
+
+  async deleteItemVersion(itemId: string, versionId: string): Promise<void> {
+    await fetchAPI(`items/${itemId}/versions/${versionId}/`, {
+      method: "DELETE",
+    });
   }
 
   async deleteItems(ids: string[]): Promise<void> {

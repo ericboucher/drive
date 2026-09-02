@@ -10,6 +10,7 @@ import {
   Edit,
   ArrowRight,
   Info,
+  History,
   Trash,
 } from "@gouvfr-lasuite/ui-kit/icons";
 import { useModal } from "@gouvfr-lasuite/cunningham-react";
@@ -23,6 +24,7 @@ import { baseApiUrl } from "@/features/api/utils";
 import { ExplorerRenameItemModal } from "../components/modals/ExplorerRenameItemModal";
 import { ExplorerCreateFolderModal } from "../components/modals/ExplorerCreateFolderModal";
 import { ItemShareModal } from "../components/modals/share/ItemShareModal";
+import { VersionHistoryModal } from "../components/modals/VersionHistoryModal";
 import { useDeleteItem } from "./useDeleteItem";
 import { ExplorerMoveFolder } from "../components/modals/move/ExplorerMoveFolderModal";
 import { getParentIdFromPath, setManualNavigationItemId } from "../utils/utils";
@@ -71,6 +73,7 @@ export const useItemActionMenuItems = ({
   const renameModal = useModal();
   const moveModal = useModal();
   const createFolderModal = useModal();
+  const versionsModal = useModal();
 
   const [currentItem, setCurrentItem] = useState<Item | null>(null);
 
@@ -78,7 +81,8 @@ export const useItemActionMenuItems = ({
     renameModal.isOpen ||
     shareItemModal.isOpen ||
     moveModal.isOpen ||
-    createFolderModal.isOpen;
+    createFolderModal.isOpen ||
+    versionsModal.isOpen;
 
   useEffect(() => {
     onModalOpenChange?.(isModalOpen);
@@ -195,6 +199,16 @@ export const useItemActionMenuItems = ({
       },
 
       {
+        icon: <History />,
+        label: t("explorer.item.actions.versions"),
+        isHidden: !item.abilities?.versions_view || item.type === ItemType.FOLDER,
+        callback: () => {
+          setCurrentItem(effectiveItem);
+          versionsModal.open();
+        },
+      },
+
+      {
         icon: <Star />,
         label: item.is_favorite
           ? t("explorer.item.actions.unfavorite")
@@ -275,6 +289,13 @@ export const useItemActionMenuItems = ({
         <ExplorerCreateFolderModal
           {...createFolderModal}
           parentId={currentItem.id}
+        />
+      )}
+      {currentItem && versionsModal.isOpen && (
+        <VersionHistoryModal
+          {...versionsModal}
+          item={currentItem}
+          key={currentItem.id}
         />
       )}
     </>

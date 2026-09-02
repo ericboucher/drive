@@ -219,6 +219,27 @@ class ItemAccessLightSerializer(ItemAccessSerializer):
         ]
 
 
+class ItemVersionSerializer(serializers.ModelSerializer):
+    """Serialize item versions."""
+
+    item = ItemLightSerializer(read_only=True)
+    created_by = UserLightSerializer(read_only=True)
+
+    class Meta:
+        model = models.ItemVersion
+        fields = [
+            "id",
+            "item",
+            "filename",
+            "mimetype",
+            "size",
+            "version_number",
+            "created_at",
+            "created_by",
+        ]
+        read_only_fields = fields
+
+
 class ListItemSerializer(serializers.ModelSerializer):
     """Serialize items with limited fields for display in lists."""
 

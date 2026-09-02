@@ -612,10 +612,35 @@
             "unfavorite": "Unstar",
             "duplicate": "Duplicate",
             "duplicate_error": "An error occurred while duplicating the item.",
-            "delete": "Delete"
+            "delete": "Delete",
+            "versions": "Versions"
           },
           "duplicating": "duplication in progress",
           "converting": "conversion in progress"
+        },
+        "versions": {
+          "modal": {
+            "title": "Version history",
+            "loading": "Loading versions…",
+            "current": "Current version",
+            "version": "Version {{n}}",
+            "empty": "No versions are available for this file.",
+            "restore": "Restore",
+            "download": "Download",
+            "delete": "Delete"
+          },
+          "toast": {
+            "restored": "The version has been restored.",
+            "deleted": "The version has been deleted."
+          },
+          "confirm_delete": {
+            "title": "Delete this version?",
+            "description": "This version will be permanently deleted. This action cannot be undone."
+          },
+          "confirm_restore": {
+            "title": "Restore this version?",
+            "description": "The current content will be saved as a new version, and this version will become the current content."
+          }
         }
       },
       "anonymous_cta": {
@@ -1321,10 +1346,35 @@
             "unfavorite": "Retirer des favoris",
             "duplicate": "Dupliquer",
             "duplicate_error": "Une erreur est survenue lors de la duplication.",
-            "delete": "Supprimer"
+            "delete": "Supprimer",
+            "versions": "Versions"
           },
           "duplicating": "duplication en cours",
           "converting": "conversion en cours"
+        },
+        "versions": {
+          "modal": {
+            "title": "Historique des versions",
+            "loading": "Chargement des versions…",
+            "current": "Version actuelle",
+            "version": "Version {{n}}",
+            "empty": "Aucune version n'est disponible pour ce fichier.",
+            "restore": "Restaurer",
+            "download": "Télécharger",
+            "delete": "Supprimer"
+          },
+          "toast": {
+            "restored": "La version a été restaurée.",
+            "deleted": "La version a été supprimée."
+          },
+          "confirm_delete": {
+            "title": "Supprimer cette version ?",
+            "description": "Cette version sera définitivement supprimée. Cette action est irréversible."
+          },
+          "confirm_restore": {
+            "title": "Restaurer cette version ?",
+            "description": "Le contenu actuel sera enregistré comme nouvelle version, et cette version deviendra le contenu actuel."
+          }
         }
       },
       "anonymous_cta": {
@@ -2030,10 +2080,35 @@
             "unfavorite": "Verwijder uit favorieten",
             "duplicate": "Dupliceer",
             "duplicate_error": "Er is een fout opgetreden bij het dupliceren.",
-            "delete": "Verwijder"
+            "delete": "Verwijder",
+            "versions": "Versies"
           },
           "duplicating": "duplicatie bezig",
           "converting": "conversie bezig"
+        },
+        "versions": {
+          "modal": {
+            "title": "Versiegeschiedenis",
+            "loading": "Versies laden…",
+            "current": "Huidige versie",
+            "version": "Versie {{n}}",
+            "empty": "Er zijn geen versies beschikbaar voor dit bestand.",
+            "restore": "Herstellen",
+            "download": "Downloaden",
+            "delete": "Verwijderen"
+          },
+          "toast": {
+            "restored": "De versie is hersteld.",
+            "deleted": "De versie is verwijderd."
+          },
+          "confirm_delete": {
+            "title": "Deze versie verwijderen?",
+            "description": "Deze versie wordt definitief verwijderd. Deze actie kan niet ongedaan worden gemaakt."
+          },
+          "confirm_restore": {
+            "title": "Deze versie herstellen?",
+            "description": "De huidige inhoud wordt opgeslagen als een nieuwe versie, en deze versie wordt de huidige inhoud."
+          }
         }
       },
       "anonymous_cta": {

@@ -19,6 +19,7 @@ import {
   Item,
   ItemBreadcrumb,
   ItemType,
+  ItemVersion,
   User,
   UserLight,
   WopiInfo,
@@ -185,6 +186,12 @@ export abstract class Driver {
   abstract hardDeleteItems(ids: string[]): Promise<void>;
   abstract getWopiInfo(itemId: string): Promise<WopiInfo>;
   abstract convertItem(itemId: string): Promise<Item>;
+
+  // Versions
+  abstract getItemVersions(itemId: string): Promise<ItemVersion[]>;
+  abstract downloadItemVersion(itemId: string, versionId: string): Promise<void>;
+  abstract restoreItemVersion(itemId: string, versionId: string): Promise<void>;
+  abstract deleteItemVersion(itemId: string, versionId: string): Promise<void>;
 
   abstract getEntitlements(): Promise<Entitlements>;
 

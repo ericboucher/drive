@@ -117,6 +117,31 @@ class ItemAccessPermission(CreateWithPriviliegedRolesMixin, IsAuthenticated):
         return abilities.get(view.action, False)
 
 
+class ItemVersionPermission(IsAuthenticated):
+    """Permission class for the ItemVersionViewSet.
+
+    Gates version operations on the underlying item's abilities.
+    """
+
+    def has_permission(self, request, view):
+        """Check the ability required by the requested action on the related item."""
+        if not super().has_permission(request, view):
+            return False
+
+        item = getattr(view, "item", None)
+        if item is None:
+            return False
+
+        abilities = item.get_abilities(request.user)
+        if view.action in ("list", "retrieve", "download"):
+            return abilities.get("versions_view", False)
+        if view.action == "restore":
+            return abilities.get("versions_restore", False)
+        if view.action == "destroy":
+            return abilities.get("versions_destroy", False)
+        return False
+
+
 class ItemPermission(permissions.BasePermission):
     """Subclass to handle soft deletion specificities."""
 

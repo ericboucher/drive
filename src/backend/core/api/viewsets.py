@@ -52,6 +52,7 @@ from core.services.accesses import (
     synchronize_descendants_accesses,
 )
 from core.services.item_exports import build_zip_stream, export_descendants
+from core.services.item_versions import delete_version, restore_version
 from core.services.sdk_relay import SDKRelayManager
 from core.services.search_indexers import (
     get_file_indexer,
@@ -2138,6 +2139,78 @@ class ItemAccessViewSet(
             },
             item=item,
         )
+
+
+class ItemVersionViewSet(
+    drf.mixins.ListModelMixin,
+    drf.mixins.RetrieveModelMixin,
+    drf.mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    """API ViewSet for item versions.
+
+    GET /api/v1.0/items/<resource_id>/versions/
+        Return the list of stored versions of a file (newest first).
+    GET /api/v1.0/items/<resource_id>/versions/<version_id>/
+        Return a single stored version.
+    GET /api/v1.0/items/<resource_id>/versions/<version_id>/download/
+        Redirect to the media URL of the stored version.
+    POST /api/v1.0/items/<resource_id>/versions/<version_id>/restore/
+        Restore the version as the live content of the file.
+    DELETE /api/v1.0/items/<resource_id>/versions/<version_id>/
+        Delete a stored version.
+    """
+
+    lookup_field = "id"
+    # Forcing to None makes sure the OpenApi schema does not infer that the
+    # list endpoint supports pagination.
+    pagination_class = None
+    permission_classes = [permissions.ItemVersionPermission]
+    queryset = models.ItemVersion.objects.select_related("item", "created_by").all()
+    resource_field_name = "item"
+    serializer_class = serializers.ItemVersionSerializer
+
+    @cached_property
+    def item(self) -> models.Item:
+        """Get related item from resource ID in url."""
+        try:
+            return models.Item.objects.annotate_user_roles(self.request.user).get(
+                pk=self.kwargs["resource_id"]
+            )
+        except models.Item.DoesNotExist as excpt:
+            raise drf.exceptions.NotFound() from excpt
+
+    def filter_queryset(self, queryset):
+        """Override to filter on related resource."""
+        queryset = super().filter_queryset(queryset)
+        return queryset.filter(**{self.resource_field_name: self.kwargs["resource_id"]})
+
+    def get_queryset(self):
+        """Order versions by descending version number."""
+        return super().get_queryset().order_by("-version_number")
+
+    @drf.decorators.action(detail=True, methods=["get"], url_path="download")
+    def download(self, request, *args, **kwargs):
+        """Redirect to the media URL of the stored version."""
+        version = self.get_object()
+        redirect_url = f"{settings.MEDIA_BASE_URL}{settings.MEDIA_URL}{quote(version.file_key)}"
+        return drf.response.Response(
+            status=status.HTTP_302_FOUND,
+            headers={"Location": redirect_url},
+        )
+
+    @drf.decorators.action(detail=True, methods=["post"], url_path="restore")
+    def restore(self, request, *args, **kwargs):
+        """Restore the version as the live content of the file."""
+        version = self.get_object()
+        restore_version(version, created_by=request.user)
+        return drf.response.Response(status=status.HTTP_204_NO_CONTENT)
+
+    def destroy(self, request, *args, **kwargs):
+        """Delete a stored version."""
+        version = self.get_object()
+        delete_version(version)
+        return drf.response.Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class InvitationViewset(
